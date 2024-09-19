@@ -1,0 +1,185 @@
+basePath: /
+definitions:
+  models.AnswerOption:
+    properties:
+      id:
+        type: integer
+      is_correct:
+        type: boolean
+      option_text:
+        type: string
+      question_id:
+        type: integer
+    type: object
+  models.Question:
+    properties:
+      answer_options:
+        items:
+          $ref: '#/definitions/models.AnswerOption'
+        type: array
+      content:
+        type: string
+      explanation:
+        type: string
+      id:
+        type: integer
+      question_bank_id:
+        type: integer
+      question_type_id:
+        type: integer
+    type: object
+  models.QuestionBank:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is an API for managing question banks.
+  title: Question Bank API
+  version: "1.0"
+paths:
+  /question_banks:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有的题库
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.QuestionBank'
+            type: array
+      summary: 获取题库列表
+      tags:
+      - QuestionBank
+    post:
+      consumes:
+      - application/json
+      description: 新增题库
+      parameters:
+      - description: 题库名称
+        in: body
+        name: name
+        required: true
+        schema:
+          $ref: '#/definitions/models.QuestionBank'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.QuestionBank'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "500":
+          description: Failed to create question bank
+          schema:
+            type: string
+      summary: 新增题库
+      tags:
+      - QuestionBank
+  /question_banks/{bank_id}/questions:
+    get:
+      consumes:
+      - application/json
+      description: 获取某个题库中的所有问题
+      parameters:
+      - description: 题库ID
+        in: path
+        name: bank_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Question'
+            type: array
+        "404":
+          description: Question bank not found
+          schema:
+            type: string
+      summary: 获取题库中的问题
+      tags:
+      - Question
+  /question_banks/{id}:
+    put:
+      consumes:
+      - application/json
+      description: 根据ID修改题库
+      parameters:
+      - description: 题库ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 题库名称
+        in: body
+        name: name
+        required: true
+        schema:
+          $ref: '#/definitions/models.QuestionBank'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.QuestionBank'
+        "400":
+          description: Invalid input
+          schema:
+            type: string
+        "404":
+          description: Question bank not found
+          schema:
+            type: string
+        "500":
+          description: Failed to update question bank
+          schema:
+            type: string
+      summary: 修改题库
+      tags:
+      - QuestionBank
+  /questions/{question_id}:
+    get:
+      consumes:
+      - application/json
+      description: 获取某个问题的详细信息，包括答案选项
+      parameters:
+      - description: 问题ID
+        in: path
+        name: question_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Question'
+        "404":
+          description: Question not found
+          schema:
+            type: string
+      summary: 获取问题详情
+      tags:
+      - Question
+swagger: "2.0"

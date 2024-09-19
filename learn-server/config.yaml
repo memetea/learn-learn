@@ -1,0 +1,3 @@
+server:
+  port: "8081"
+  enableSwagger: true  # 是否启用 Swagger 文档服务
