@@ -1,0 +1,60 @@
+{
+ "menus": [
+  {
+   "id": "users",
+   "parent": "admin",
+   "label": "Users Management",
+   "path": "/users",
+   "icon": "UserOutlined",
+   "permission": "users:read",
+   "order": 1
+  },
+
+  {
+   "id": "roles",
+   "parent": "admin",
+   "label": "Roles Management",
+   "path": "/roles",
+   "icon": "UserOutlined",
+   "permission": "roles:read",
+   "order": 2
+  } ,
+  {
+   "id": "permissions",
+   "parent": "admin",
+   "label": "Permissions Management",
+   "path": "/permissions",
+   "icon": "UserOutlined",
+   "permission": "permissions:read",
+   "order": 3
+  },
+
+  {
+   "id": "question_banks",
+   "parent": "quiz",
+   "label": "QuestionBank Management",
+   "path": "/quiz/question_banks",
+   "icon": "UserOutlined",
+   "permission": "quiz:edit",
+   "order": 1
+  } ,
+  {
+   "id": "questions",
+   "parent": "quiz",
+   "label": "Questions Management",
+   "path": "/quiz/questions",
+   "icon": "UserOutlined",
+   "permission": "quiz:edit",
+   "order": 2
+  }, 
+  {
+   "id": "quiz_test",
+   "parent": "quiz",
+   "label": "Random Test",
+   "path": "/quiz/test",
+   "icon": "UserOutlined",
+   "permission": "",
+   "order": 3
+  } 
+]
+}

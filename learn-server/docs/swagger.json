@@ -3,18 +3,309 @@
     "info": {
         "description": "This is an API for managing question banks.",
         "title": "Question Bank API",
-        "contact": {
-            "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
-        },
+        "contact": {},
         "version": "1.0"
     },
     "host": "localhost:8080",
     "basePath": "/",
     "paths": {
-        "/question_banks": {
+        "/auth/login": {
+            "post": {
+                "description": "处理用户登录并生成JWT令牌和刷新令牌",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "用户登录",
+                "parameters": [
+                    {
+                        "description": "登录请求",
+                        "name": "login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LoginRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "登录成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response-dto_TokenPairResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "无效请求",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "认证失败",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/refresh": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "刷新JWT令牌，支持滑动过期的双Token机制",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "刷新JWT令牌",
+                "parameters": [
+                    {
+                        "description": "刷新令牌请求",
+                        "name": "refreshToken",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RefreshTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "刷新成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response-dto_TokenPairResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "无效请求",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "认证失败",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "description": "注册新用户",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "用户注册",
+                "parameters": [
+                    {
+                        "description": "用户注册信息",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RegisterUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "注册成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response-string"
+                        }
+                    },
+                    "400": {
+                        "description": "无效请求",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/permissions": {
             "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取所有权限的列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Permission"
+                ],
+                "summary": "获取权限列表",
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response-array_dto_PermissionResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quiz/question_attempts": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "记录用户对特定问题的答题情况",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "QuestionAttempt"
+                ],
+                "summary": "记录用户的答题尝试",
+                "parameters": [
+                    {
+                        "description": "答题尝试信息",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.QuestionAttemptRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "记录成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response-dto_QuestionAttemptResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "无效请求",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quiz/question_attempts/{user_id}/{question_bank_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取用户在特定题库中的答题情况",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "QuestionAttempt"
+                ],
+                "summary": "获取用户的答题尝试情况",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户 ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "题库 ID",
+                        "name": "question_bank_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "答题尝试列表",
+                        "schema": {
+                            "$ref": "#/definitions/Response-array_dto_QuestionAttemptResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "无效请求",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quiz/question_banks": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "获取所有的题库",
                 "consumes": [
                     "application/json"
@@ -28,18 +319,26 @@
                 "summary": "获取题库列表",
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "题库列表",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.QuestionBank"
-                            }
+                            "$ref": "#/definitions/Response-array_dto_QuestionBankResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
             },
             "post": {
-                "description": "新增题库",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "创建一个新的题库",
                 "consumes": [
                     "application/json"
                 ],
@@ -49,43 +348,48 @@
                 "tags": [
                     "QuestionBank"
                 ],
-                "summary": "新增题库",
+                "summary": "创建题库",
                 "parameters": [
                     {
-                        "description": "题库名称",
-                        "name": "name",
+                        "description": "创建题库请求",
+                        "name": "questionBank",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.QuestionBank"
+                            "$ref": "#/definitions/dto.CreateQuestionBankRequest"
                         }
                     }
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created",
+                        "description": "创建成功",
                         "schema": {
-                            "$ref": "#/definitions/models.QuestionBank"
+                            "$ref": "#/definitions/Response-dto_QuestionBankResponse"
                         }
                     },
                     "400": {
-                        "description": "Invalid input",
+                        "description": "无效请求",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Failed to create question bank",
+                        "description": "内部服务器错误",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/question_banks/{bank_id}/questions": {
+        "/quiz/question_banks/{id}/questions": {
             "get": {
-                "description": "获取某个题库中的所有问题",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取指定题库的所有问题（分页查询）",
                 "consumes": [
                     "application/json"
                 ],
@@ -95,38 +399,56 @@
                 "tags": [
                     "Question"
                 ],
-                "summary": "获取题库中的问题",
+                "summary": "获取题库问题",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "题库ID",
-                        "name": "bank_id",
+                        "description": "题库 ID",
+                        "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "标签过滤",
+                        "name": "tag",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页数量",
+                        "name": "page_size",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "问题列表",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Question"
-                            }
+                            "$ref": "#/definitions/Response-array_dto_QuestionResponse"
                         }
                     },
-                    "404": {
-                        "description": "Question bank not found",
+                    "500": {
+                        "description": "内部服务器错误",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
-            }
-        },
-        "/question_banks/{id}": {
-            "put": {
-                "description": "根据ID修改题库",
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "创建一个新的问题",
                 "consumes": [
                     "application/json"
                 ],
@@ -134,58 +456,106 @@
                     "application/json"
                 ],
                 "tags": [
-                    "QuestionBank"
+                    "Question"
                 ],
-                "summary": "修改题库",
+                "summary": "创建问题",
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "题库ID",
+                        "description": "题库 ID",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "题库名称",
-                        "name": "name",
+                        "description": "创建问题请求",
+                        "name": "question",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.QuestionBank"
+                            "$ref": "#/definitions/dto.CreateQuestionRequest"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "创建成功",
                         "schema": {
-                            "$ref": "#/definitions/models.QuestionBank"
+                            "$ref": "#/definitions/Response-dto_QuestionResponse"
                         }
                     },
                     "400": {
-                        "description": "Invalid input",
+                        "description": "无效请求",
                         "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Question bank not found",
-                        "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     },
                     "500": {
-                        "description": "Failed to update question bank",
+                        "description": "内部服务器错误",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
             }
         },
-        "/questions/{question_id}": {
+        "/quiz/question_banks/{id}/random_questions": {
             "get": {
-                "description": "获取某个问题的详细信息，包括答案选项",
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "随机获取题库中的问题",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Question"
+                ],
+                "summary": "获取随机问题",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "题库 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "随机题目数量",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "随机题目列表",
+                        "schema": {
+                            "$ref": "#/definitions/Response-array_dto_QuestionResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/quiz/questions/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取指定问题的详细信息，包括答案和标签",
                 "consumes": [
                     "application/json"
                 ],
@@ -199,23 +569,584 @@
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "问题ID",
-                        "name": "question_id",
+                        "description": "问题 ID",
+                        "name": "id",
                         "in": "path",
                         "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "问题详情",
                         "schema": {
-                            "$ref": "#/definitions/models.Question"
+                            "$ref": "#/definitions/Response-dto_QuestionResponse"
                         }
                     },
-                    "404": {
-                        "description": "Question not found",
+                    "500": {
+                        "description": "内部服务器错误",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "编辑指定问题",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Question"
+                ],
+                "summary": "更新问题",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "问题 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "更新问题请求",
+                        "name": "question",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateQuestionRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response-dto_QuestionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "无效请求",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "删除指定问题",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Question"
+                ],
+                "summary": "删除问题",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "问题 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "删除成功"
+                    },
+                    "400": {
+                        "description": "无效请求",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/roles": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取所有角色的列表",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role"
+                ],
+                "summary": "获取角色列表",
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response-array_dto_RoleResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "创建一个新角色",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role"
+                ],
+                "summary": "创建角色",
+                "parameters": [
+                    {
+                        "description": "创建角色请求",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RoleRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "创建成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response-dto_RoleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "无效请求",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/roles/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "更新指定角色的信息，包括角色名称和权限",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role"
+                ],
+                "summary": "更新角色信息",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "更新角色请求",
+                        "name": "role",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.RoleUpdateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response-string"
+                        }
+                    },
+                    "400": {
+                        "description": "无效请求",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "根据角色ID删除指定的角色",
+                "tags": [
+                    "Role"
+                ],
+                "summary": "删除角色",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "删除成功，无内容返回"
+                    },
+                    "400": {
+                        "description": "无效请求",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/roles/{id}/permissions": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取指定角色的权限列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Role"
+                ],
+                "summary": "获取角色权限",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "角色 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response-array_dto_PermissionResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "无效请求",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "获取所有用户的列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "获取用户列表",
+                "responses": {
+                    "200": {
+                        "description": "请求成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response-array_dto_UserResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "创建一个新用户",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "创建用户",
+                "parameters": [
+                    {
+                        "description": "创建用户请求",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "创建成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response-dto_CreateUserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "无效请求",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "更新指定用户的信息，包括用户名、角色和状态",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "更新用户信息",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "更新用户请求",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "更新成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response-string"
+                        }
+                    },
+                    "400": {
+                        "description": "无效请求",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/invalidate_session": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Invalidates the user's current session, effectively logging them out by incrementing their token version.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Invalidate User Session",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User session invalidated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/Response-string"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid user ID",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/roles": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "根据用户ID获取该用户的角色列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "获取用户角色",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "用户 ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "获取成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response-array_dto_RoleResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "无效请求",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "内部服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/api.ErrorResponse"
                         }
                     }
                 }
@@ -223,8 +1154,236 @@
         }
     },
     "definitions": {
-        "models.AnswerOption": {
+        "Response-array_dto_PermissionResponse": {
             "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.PermissionResponse"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/api.PaginationMeta"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "Response-array_dto_QuestionAttemptResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.QuestionAttemptResponse"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/api.PaginationMeta"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "Response-array_dto_QuestionBankResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.QuestionBankResponse"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/api.PaginationMeta"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "Response-array_dto_QuestionResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.QuestionResponse"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/api.PaginationMeta"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "Response-array_dto_RoleResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.RoleResponse"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/api.PaginationMeta"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "Response-array_dto_UserResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.UserResponse"
+                    }
+                },
+                "meta": {
+                    "$ref": "#/definitions/api.PaginationMeta"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "Response-dto_CreateUserResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.CreateUserResponse"
+                },
+                "meta": {
+                    "$ref": "#/definitions/api.PaginationMeta"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "Response-dto_QuestionAttemptResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.QuestionAttemptResponse"
+                },
+                "meta": {
+                    "$ref": "#/definitions/api.PaginationMeta"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "Response-dto_QuestionBankResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.QuestionBankResponse"
+                },
+                "meta": {
+                    "$ref": "#/definitions/api.PaginationMeta"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "Response-dto_QuestionResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.QuestionResponse"
+                },
+                "meta": {
+                    "$ref": "#/definitions/api.PaginationMeta"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "Response-dto_RoleResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.RoleResponse"
+                },
+                "meta": {
+                    "$ref": "#/definitions/api.PaginationMeta"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "Response-dto_TokenPairResponse": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/dto.TokenPairResponse"
+                },
+                "meta": {
+                    "$ref": "#/definitions/api.PaginationMeta"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "Response-string": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string"
+                },
+                "meta": {
+                    "$ref": "#/definitions/api.PaginationMeta"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "api.PaginationMeta": {
+            "type": "object",
+            "properties": {
+                "current_page": {
+                    "type": "integer"
+                },
+                "page_size": {
+                    "type": "integer"
+                },
+                "total_records": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.AnswerOption": {
+            "type": "object",
+            "required": [
+                "option_text"
+            ],
             "properties": {
                 "id": {
                     "type": "integer"
@@ -234,19 +1393,47 @@
                 },
                 "option_text": {
                     "type": "string"
-                },
-                "question_id": {
-                    "type": "integer"
                 }
             }
         },
-        "models.Question": {
+        "dto.CreateQuestionBankRequest": {
             "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateQuestionRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "question_type"
+            ],
             "properties": {
                 "answer_options": {
+                    "description": "仅选择题使用",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.AnswerOption"
+                        "$ref": "#/definitions/dto.AnswerOption"
+                    }
+                },
+                "answer_text": {
+                    "description": "问答题使用",
+                    "type": "string"
+                },
+                "author_id": {
+                    "description": "问题的作者 ID",
+                    "type": "integer"
+                },
+                "blanks": {
+                    "description": "填空题使用",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.FillInTheBlankAnswer"
                     }
                 },
                 "content": {
@@ -255,18 +1442,127 @@
                 "explanation": {
                     "type": "string"
                 },
+                "question_type": {
+                    "$ref": "#/definitions/models.QuestionType"
+                },
+                "tags": {
+                    "description": "标签列表",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "true_false": {
+                    "description": "判断题使用",
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.CreateUserRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "roles": {
+                    "description": "用户可以有多个角色",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "status": {
+                    "description": "用户状态",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/models.UserStatus"
+                        }
+                    ]
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreateUserResponse": {
+            "type": "object",
+            "properties": {
                 "id": {
-                    "type": "integer"
-                },
-                "question_bank_id": {
-                    "type": "integer"
-                },
-                "question_type_id": {
                     "type": "integer"
                 }
             }
         },
-        "models.QuestionBank": {
+        "dto.FillInTheBlankAnswer": {
+            "type": "object",
+            "required": [
+                "blank_text"
+            ],
+            "properties": {
+                "blank_text": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.LoginRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.PermissionResponse": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.QuestionAttemptRequest": {
+            "type": "object",
+            "properties": {
+                "answer": {
+                    "description": "Stores the user's answer, can be string, []string, bool, etc."
+                },
+                "question_id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.QuestionAttemptResponse": {
+            "type": "object",
+            "properties": {
+                "attempts": {
+                    "type": "integer"
+                },
+                "consecutive_correct": {
+                    "type": "integer"
+                },
+                "last_answer_at": {
+                    "type": "string"
+                },
+                "question_id": {
+                    "type": "integer"
+                },
+                "wrong": {
+                    "type": "integer"
+                }
+            }
+        },
+        "dto.QuestionBankResponse": {
             "type": "object",
             "properties": {
                 "id": {
@@ -276,6 +1572,277 @@
                     "type": "string"
                 }
             }
+        },
+        "dto.QuestionResponse": {
+            "type": "object",
+            "properties": {
+                "answer_options": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.AnswerOption"
+                    }
+                },
+                "author_id": {
+                    "type": "integer"
+                },
+                "author_name": {
+                    "description": "用户名",
+                    "type": "string"
+                },
+                "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "explanation": {
+                    "type": "string"
+                },
+                "fill_in_the_blanks": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.FillInTheBlankAnswer"
+                    }
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "question_bank_id": {
+                    "type": "integer"
+                },
+                "question_type": {
+                    "$ref": "#/definitions/models.QuestionType"
+                },
+                "tags": {
+                    "description": "返回标签",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "true_false_answer": {
+                    "$ref": "#/definitions/dto.TrueFalseAnswer"
+                },
+                "written_answer": {
+                    "$ref": "#/definitions/dto.WrittenAnswer"
+                }
+            }
+        },
+        "dto.RefreshTokenRequest": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RegisterUserRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RoleRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RoleResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.RoleUpdateRequest": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "permissions": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "dto.TokenPairResponse": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                },
+                "refresh_token": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.TrueFalseAnswer": {
+            "type": "object",
+            "properties": {
+                "is_true": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.UpdateQuestionRequest": {
+            "type": "object",
+            "required": [
+                "content",
+                "question_bank_id",
+                "question_type"
+            ],
+            "properties": {
+                "answer_options": {
+                    "description": "仅选择题使用",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.AnswerOption"
+                    }
+                },
+                "answer_text": {
+                    "description": "问答题使用",
+                    "type": "string"
+                },
+                "author_id": {
+                    "description": "问题的作者 ID",
+                    "type": "integer"
+                },
+                "blanks": {
+                    "description": "填空题使用",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/dto.FillInTheBlankAnswer"
+                    }
+                },
+                "content": {
+                    "type": "string"
+                },
+                "explanation": {
+                    "type": "string"
+                },
+                "question_bank_id": {
+                    "type": "integer"
+                },
+                "question_type": {
+                    "$ref": "#/definitions/models.QuestionType"
+                },
+                "tags": {
+                    "description": "标签列表",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "true_false": {
+                    "description": "判断题使用",
+                    "type": "boolean"
+                }
+            }
+        },
+        "dto.UpdateUserRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "description": "可选的密码字段",
+                    "type": "string"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.UserResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "integer"
+                },
+                "token_version": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.WrittenAnswer": {
+            "type": "object",
+            "required": [
+                "answer_text"
+            ],
+            "properties": {
+                "answer_text": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.QuestionType": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2,
+                3,
+                4
+            ],
+            "x-enum-comments": {
+                "QuestionTypeFillInTheBlank": "新增填空题类型"
+            },
+            "x-enum-varnames": [
+                "QuestionTypeSingleChoice",
+                "QuestionTypeMultipleChoice",
+                "QuestionTypeTrueFalse",
+                "QuestionTypeWrittenAnswer",
+                "QuestionTypeFillInTheBlank"
+            ]
+        },
+        "models.UserStatus": {
+            "type": "integer",
+            "enum": [
+                0,
+                1,
+                2,
+                3
+            ],
+            "x-enum-varnames": [
+                "StatusInactive",
+                "StatusActive",
+                "StatusPending",
+                "StatusSuspended"
+            ]
         }
     }
 }

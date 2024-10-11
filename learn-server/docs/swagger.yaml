@@ -1,6 +1,151 @@
 basePath: /
 definitions:
-  models.AnswerOption:
+  Response-array_dto_PermissionResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.PermissionResponse'
+        type: array
+      meta:
+        $ref: '#/definitions/api.PaginationMeta'
+      status:
+        type: string
+    type: object
+  Response-array_dto_QuestionAttemptResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.QuestionAttemptResponse'
+        type: array
+      meta:
+        $ref: '#/definitions/api.PaginationMeta'
+      status:
+        type: string
+    type: object
+  Response-array_dto_QuestionBankResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.QuestionBankResponse'
+        type: array
+      meta:
+        $ref: '#/definitions/api.PaginationMeta'
+      status:
+        type: string
+    type: object
+  Response-array_dto_QuestionResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.QuestionResponse'
+        type: array
+      meta:
+        $ref: '#/definitions/api.PaginationMeta'
+      status:
+        type: string
+    type: object
+  Response-array_dto_RoleResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.RoleResponse'
+        type: array
+      meta:
+        $ref: '#/definitions/api.PaginationMeta'
+      status:
+        type: string
+    type: object
+  Response-array_dto_UserResponse:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/dto.UserResponse'
+        type: array
+      meta:
+        $ref: '#/definitions/api.PaginationMeta'
+      status:
+        type: string
+    type: object
+  Response-dto_CreateUserResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.CreateUserResponse'
+      meta:
+        $ref: '#/definitions/api.PaginationMeta'
+      status:
+        type: string
+    type: object
+  Response-dto_QuestionAttemptResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.QuestionAttemptResponse'
+      meta:
+        $ref: '#/definitions/api.PaginationMeta'
+      status:
+        type: string
+    type: object
+  Response-dto_QuestionBankResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.QuestionBankResponse'
+      meta:
+        $ref: '#/definitions/api.PaginationMeta'
+      status:
+        type: string
+    type: object
+  Response-dto_QuestionResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.QuestionResponse'
+      meta:
+        $ref: '#/definitions/api.PaginationMeta'
+      status:
+        type: string
+    type: object
+  Response-dto_RoleResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.RoleResponse'
+      meta:
+        $ref: '#/definitions/api.PaginationMeta'
+      status:
+        type: string
+    type: object
+  Response-dto_TokenPairResponse:
+    properties:
+      data:
+        $ref: '#/definitions/dto.TokenPairResponse'
+      meta:
+        $ref: '#/definitions/api.PaginationMeta'
+      status:
+        type: string
+    type: object
+  Response-string:
+    properties:
+      data:
+        type: string
+      meta:
+        $ref: '#/definitions/api.PaginationMeta'
+      status:
+        type: string
+    type: object
+  api.ErrorResponse:
+    properties:
+      message:
+        type: string
+      status:
+        type: string
+    type: object
+  api.PaginationMeta:
+    properties:
+      current_page:
+        type: integer
+      page_size:
+        type: integer
+      total_records:
+        type: integer
+    type: object
+  dto.AnswerOption:
     properties:
       id:
         type: integer
@@ -8,44 +153,503 @@ definitions:
         type: boolean
       option_text:
         type: string
-      question_id:
-        type: integer
+    required:
+    - option_text
     type: object
-  models.Question:
+  dto.CreateQuestionBankRequest:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  dto.CreateQuestionRequest:
     properties:
       answer_options:
+        description: 仅选择题使用
         items:
-          $ref: '#/definitions/models.AnswerOption'
+          $ref: '#/definitions/dto.AnswerOption'
+        type: array
+      answer_text:
+        description: 问答题使用
+        type: string
+      author_id:
+        description: 问题的作者 ID
+        type: integer
+      blanks:
+        description: 填空题使用
+        items:
+          $ref: '#/definitions/dto.FillInTheBlankAnswer'
         type: array
       content:
         type: string
       explanation:
         type: string
+      question_type:
+        $ref: '#/definitions/models.QuestionType'
+      tags:
+        description: 标签列表
+        items:
+          type: string
+        type: array
+      true_false:
+        description: 判断题使用
+        type: boolean
+    required:
+    - content
+    - question_type
+    type: object
+  dto.CreateUserRequest:
+    properties:
+      password:
+        type: string
+      roles:
+        description: 用户可以有多个角色
+        items:
+          type: string
+        type: array
+      status:
+        allOf:
+        - $ref: '#/definitions/models.UserStatus'
+        description: 用户状态
+      username:
+        type: string
+    type: object
+  dto.CreateUserResponse:
+    properties:
       id:
         type: integer
-      question_bank_id:
+    type: object
+  dto.FillInTheBlankAnswer:
+    properties:
+      blank_text:
+        type: string
+    required:
+    - blank_text
+    type: object
+  dto.LoginRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  dto.PermissionResponse:
+    properties:
+      description:
+        type: string
+      id:
         type: integer
-      question_type_id:
+      name:
+        type: string
+    type: object
+  dto.QuestionAttemptRequest:
+    properties:
+      answer:
+        description: Stores the user's answer, can be string, []string, bool, etc.
+      question_id:
+        type: integer
+      user_id:
         type: integer
     type: object
-  models.QuestionBank:
+  dto.QuestionAttemptResponse:
+    properties:
+      attempts:
+        type: integer
+      consecutive_correct:
+        type: integer
+      last_answer_at:
+        type: string
+      question_id:
+        type: integer
+      wrong:
+        type: integer
+    type: object
+  dto.QuestionBankResponse:
     properties:
       id:
         type: integer
       name:
         type: string
     type: object
+  dto.QuestionResponse:
+    properties:
+      answer_options:
+        items:
+          $ref: '#/definitions/dto.AnswerOption'
+        type: array
+      author_id:
+        type: integer
+      author_name:
+        description: 用户名
+        type: string
+      content:
+        type: string
+      created_at:
+        type: string
+      explanation:
+        type: string
+      fill_in_the_blanks:
+        items:
+          $ref: '#/definitions/dto.FillInTheBlankAnswer'
+        type: array
+      id:
+        type: integer
+      question_bank_id:
+        type: integer
+      question_type:
+        $ref: '#/definitions/models.QuestionType'
+      tags:
+        description: 返回标签
+        items:
+          type: string
+        type: array
+      true_false_answer:
+        $ref: '#/definitions/dto.TrueFalseAnswer'
+      written_answer:
+        $ref: '#/definitions/dto.WrittenAnswer'
+    type: object
+  dto.RefreshTokenRequest:
+    properties:
+      token:
+        type: string
+    type: object
+  dto.RegisterUserRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  dto.RoleRequest:
+    properties:
+      name:
+        type: string
+    type: object
+  dto.RoleResponse:
+    properties:
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  dto.RoleUpdateRequest:
+    properties:
+      name:
+        type: string
+      permissions:
+        items:
+          type: integer
+        type: array
+    type: object
+  dto.TokenPairResponse:
+    properties:
+      access_token:
+        type: string
+      refresh_token:
+        type: string
+    type: object
+  dto.TrueFalseAnswer:
+    properties:
+      is_true:
+        type: boolean
+    type: object
+  dto.UpdateQuestionRequest:
+    properties:
+      answer_options:
+        description: 仅选择题使用
+        items:
+          $ref: '#/definitions/dto.AnswerOption'
+        type: array
+      answer_text:
+        description: 问答题使用
+        type: string
+      author_id:
+        description: 问题的作者 ID
+        type: integer
+      blanks:
+        description: 填空题使用
+        items:
+          $ref: '#/definitions/dto.FillInTheBlankAnswer'
+        type: array
+      content:
+        type: string
+      explanation:
+        type: string
+      question_bank_id:
+        type: integer
+      question_type:
+        $ref: '#/definitions/models.QuestionType'
+      tags:
+        description: 标签列表
+        items:
+          type: string
+        type: array
+      true_false:
+        description: 判断题使用
+        type: boolean
+    required:
+    - content
+    - question_bank_id
+    - question_type
+    type: object
+  dto.UpdateUserRequest:
+    properties:
+      password:
+        description: 可选的密码字段
+        type: string
+      roles:
+        items:
+          type: string
+        type: array
+      status:
+        type: integer
+      username:
+        type: string
+    type: object
+  dto.UserResponse:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      status:
+        type: integer
+      token_version:
+        type: integer
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  dto.WrittenAnswer:
+    properties:
+      answer_text:
+        type: string
+    required:
+    - answer_text
+    type: object
+  models.QuestionType:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    type: integer
+    x-enum-comments:
+      QuestionTypeFillInTheBlank: 新增填空题类型
+    x-enum-varnames:
+    - QuestionTypeSingleChoice
+    - QuestionTypeMultipleChoice
+    - QuestionTypeTrueFalse
+    - QuestionTypeWrittenAnswer
+    - QuestionTypeFillInTheBlank
+  models.UserStatus:
+    enum:
+    - 0
+    - 1
+    - 2
+    - 3
+    type: integer
+    x-enum-varnames:
+    - StatusInactive
+    - StatusActive
+    - StatusPending
+    - StatusSuspended
 host: localhost:8080
 info:
-  contact:
-    email: support@swagger.io
-    name: API Support
-    url: http://www.swagger.io/support
+  contact: {}
   description: This is an API for managing question banks.
   title: Question Bank API
   version: "1.0"
 paths:
-  /question_banks:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: 处理用户登录并生成JWT令牌和刷新令牌
+      parameters:
+      - description: 登录请求
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 登录成功
+          schema:
+            $ref: '#/definitions/Response-dto_TokenPairResponse'
+        "400":
+          description: 无效请求
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "401":
+          description: 认证失败
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: 用户登录
+      tags:
+      - Auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: 刷新JWT令牌，支持滑动过期的双Token机制
+      parameters:
+      - description: 刷新令牌请求
+        in: body
+        name: refreshToken
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RefreshTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 刷新成功
+          schema:
+            $ref: '#/definitions/Response-dto_TokenPairResponse'
+        "400":
+          description: 无效请求
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "401":
+          description: 认证失败
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 刷新JWT令牌
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: 注册新用户
+      parameters:
+      - description: 用户注册信息
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RegisterUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 注册成功
+          schema:
+            $ref: '#/definitions/Response-string'
+        "400":
+          description: 无效请求
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      summary: 用户注册
+      tags:
+      - Auth
+  /permissions:
+    get:
+      description: 获取所有权限的列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取成功
+          schema:
+            $ref: '#/definitions/Response-array_dto_PermissionResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取权限列表
+      tags:
+      - Permission
+  /quiz/question_attempts:
+    post:
+      consumes:
+      - application/json
+      description: 记录用户对特定问题的答题情况
+      parameters:
+      - description: 答题尝试信息
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/dto.QuestionAttemptRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 记录成功
+          schema:
+            $ref: '#/definitions/Response-dto_QuestionAttemptResponse'
+        "400":
+          description: 无效请求
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 记录用户的答题尝试
+      tags:
+      - QuestionAttempt
+  /quiz/question_attempts/{user_id}/{question_bank_id}:
+    get:
+      description: 获取用户在特定题库中的答题情况
+      parameters:
+      - description: 用户 ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: 题库 ID
+        in: path
+        name: question_bank_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 答题尝试列表
+          schema:
+            $ref: '#/definitions/Response-array_dto_QuestionAttemptResponse'
+        "400":
+          description: 无效请求
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户的答题尝试情况
+      tags:
+      - QuestionAttempt
+  /quiz/question_banks:
     get:
       consumes:
       - application/json
@@ -54,132 +658,536 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: 题库列表
           schema:
-            items:
-              $ref: '#/definitions/models.QuestionBank'
-            type: array
+            $ref: '#/definitions/Response-array_dto_QuestionBankResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: 获取题库列表
       tags:
       - QuestionBank
     post:
       consumes:
       - application/json
-      description: 新增题库
+      description: 创建一个新的题库
       parameters:
-      - description: 题库名称
+      - description: 创建题库请求
         in: body
-        name: name
+        name: questionBank
         required: true
         schema:
-          $ref: '#/definitions/models.QuestionBank'
+          $ref: '#/definitions/dto.CreateQuestionBankRequest'
       produces:
       - application/json
       responses:
         "201":
-          description: Created
+          description: 创建成功
           schema:
-            $ref: '#/definitions/models.QuestionBank'
+            $ref: '#/definitions/Response-dto_QuestionBankResponse'
         "400":
-          description: Invalid input
+          description: 无效请求
           schema:
-            type: string
+            $ref: '#/definitions/api.ErrorResponse'
         "500":
-          description: Failed to create question bank
+          description: 内部服务器错误
           schema:
-            type: string
-      summary: 新增题库
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建题库
       tags:
       - QuestionBank
-  /question_banks/{bank_id}/questions:
+  /quiz/question_banks/{id}/questions:
     get:
       consumes:
       - application/json
-      description: 获取某个题库中的所有问题
+      description: 获取指定题库的所有问题（分页查询）
       parameters:
-      - description: 题库ID
-        in: path
-        name: bank_id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Question'
-            type: array
-        "404":
-          description: Question bank not found
-          schema:
-            type: string
-      summary: 获取题库中的问题
-      tags:
-      - Question
-  /question_banks/{id}:
-    put:
-      consumes:
-      - application/json
-      description: 根据ID修改题库
-      parameters:
-      - description: 题库ID
+      - description: 题库 ID
         in: path
         name: id
         required: true
         type: integer
-      - description: 题库名称
-        in: body
-        name: name
-        required: true
-        schema:
-          $ref: '#/definitions/models.QuestionBank'
+      - description: 标签过滤
+        in: query
+        name: tag
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页数量
+        in: query
+        name: page_size
+        type: integer
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: 问题列表
           schema:
-            $ref: '#/definitions/models.QuestionBank'
-        "400":
-          description: Invalid input
-          schema:
-            type: string
-        "404":
-          description: Question bank not found
-          schema:
-            type: string
+            $ref: '#/definitions/Response-array_dto_QuestionResponse'
         "500":
-          description: Failed to update question bank
+          description: 内部服务器错误
           schema:
-            type: string
-      summary: 修改题库
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取题库问题
       tags:
-      - QuestionBank
-  /questions/{question_id}:
+      - Question
+    post:
+      consumes:
+      - application/json
+      description: 创建一个新的问题
+      parameters:
+      - description: 题库 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 创建问题请求
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateQuestionRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 创建成功
+          schema:
+            $ref: '#/definitions/Response-dto_QuestionResponse'
+        "400":
+          description: 无效请求
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建问题
+      tags:
+      - Question
+  /quiz/question_banks/{id}/random_questions:
     get:
       consumes:
       - application/json
-      description: 获取某个问题的详细信息，包括答案选项
+      description: 随机获取题库中的问题
       parameters:
-      - description: 问题ID
+      - description: 题库 ID
         in: path
-        name: question_id
+        name: id
+        required: true
+        type: integer
+      - description: 随机题目数量
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 随机题目列表
+          schema:
+            $ref: '#/definitions/Response-array_dto_QuestionResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取随机问题
+      tags:
+      - Question
+  /quiz/questions/{id}:
+    delete:
+      description: 删除指定问题
+      parameters:
+      - description: 问题 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: 删除成功
+        "400":
+          description: 无效请求
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除问题
+      tags:
+      - Question
+    get:
+      consumes:
+      - application/json
+      description: 获取指定问题的详细信息，包括答案和标签
+      parameters:
+      - description: 问题 ID
+        in: path
+        name: id
         required: true
         type: integer
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: 问题详情
           schema:
-            $ref: '#/definitions/models.Question'
-        "404":
-          description: Question not found
+            $ref: '#/definitions/Response-dto_QuestionResponse'
+        "500":
+          description: 内部服务器错误
           schema:
-            type: string
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
       summary: 获取问题详情
       tags:
       - Question
+    put:
+      consumes:
+      - application/json
+      description: 编辑指定问题
+      parameters:
+      - description: 问题 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 更新问题请求
+        in: body
+        name: question
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateQuestionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            $ref: '#/definitions/Response-dto_QuestionResponse'
+        "400":
+          description: 无效请求
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新问题
+      tags:
+      - Question
+  /roles:
+    get:
+      description: 获取所有角色的列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取成功
+          schema:
+            $ref: '#/definitions/Response-array_dto_RoleResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取角色列表
+      tags:
+      - Role
+    post:
+      consumes:
+      - application/json
+      description: 创建一个新角色
+      parameters:
+      - description: 创建角色请求
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RoleRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 创建成功
+          schema:
+            $ref: '#/definitions/Response-dto_RoleResponse'
+        "400":
+          description: 无效请求
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建角色
+      tags:
+      - Role
+  /roles/{id}:
+    delete:
+      description: 根据角色ID删除指定的角色
+      parameters:
+      - description: 角色 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: 删除成功，无内容返回
+        "400":
+          description: 无效请求
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 删除角色
+      tags:
+      - Role
+    put:
+      consumes:
+      - application/json
+      description: 更新指定角色的信息，包括角色名称和权限
+      parameters:
+      - description: 角色 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 更新角色请求
+        in: body
+        name: role
+        required: true
+        schema:
+          $ref: '#/definitions/dto.RoleUpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            $ref: '#/definitions/Response-string'
+        "400":
+          description: 无效请求
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新角色信息
+      tags:
+      - Role
+  /roles/{id}/permissions:
+    get:
+      consumes:
+      - application/json
+      description: 获取指定角色的权限列表
+      parameters:
+      - description: 角色 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取成功
+          schema:
+            $ref: '#/definitions/Response-array_dto_PermissionResponse'
+        "400":
+          description: 无效请求
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取角色权限
+      tags:
+      - Role
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有用户的列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 请求成功
+          schema:
+            $ref: '#/definitions/Response-array_dto_UserResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户列表
+      tags:
+      - User
+    post:
+      consumes:
+      - application/json
+      description: 创建一个新用户
+      parameters:
+      - description: 创建用户请求
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: 创建成功
+          schema:
+            $ref: '#/definitions/Response-dto_CreateUserResponse'
+        "400":
+          description: 无效请求
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 创建用户
+      tags:
+      - User
+  /users/{id}:
+    put:
+      consumes:
+      - application/json
+      description: 更新指定用户的信息，包括用户名、角色和状态
+      parameters:
+      - description: 用户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 更新用户请求
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            $ref: '#/definitions/Response-string'
+        "400":
+          description: 无效请求
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 更新用户信息
+      tags:
+      - User
+  /users/{id}/invalidate_session:
+    post:
+      consumes:
+      - application/json
+      description: Invalidates the user's current session, effectively logging them
+        out by incrementing their token version.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User session invalidated successfully
+          schema:
+            $ref: '#/definitions/Response-string'
+        "400":
+          description: Invalid user ID
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Invalidate User Session
+      tags:
+      - User
+  /users/{id}/roles:
+    get:
+      consumes:
+      - application/json
+      description: 根据用户ID获取该用户的角色列表
+      parameters:
+      - description: 用户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 获取成功
+          schema:
+            $ref: '#/definitions/Response-array_dto_RoleResponse'
+        "400":
+          description: 无效请求
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+        "500":
+          description: 内部服务器错误
+          schema:
+            $ref: '#/definitions/api.ErrorResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户角色
+      tags:
+      - User
 swagger: "2.0"

@@ -1,3 +1,21 @@
+database:
+    dsn: quiz.db 
+
+default_admin:
+  username: "admin"
+  password: "admin123"
+
+jwt:
+    secret: loxbUBpS35afXgN09Y9s8iGD6RRlcxz-tyusahpPSSU=
+    access_token_duration: 2m  # 访问令牌有效期，默认设置为15分钟
+    refresh_token_duration: 168h  # 7 天 = 7 * 24 小时
+
 server:
-  port: "8081"
-  enableSwagger: true  # 是否启用 Swagger 文档服务
+    address: :8080
+    enable_swagger: true
+    idle_timeout: 60s
+    read_timeout: 15s
+    write_timeout: 15s
+    allowed_origins:
+    - "http://localhost:5173"
+    - "https://example.com"
